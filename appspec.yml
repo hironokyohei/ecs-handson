@@ -6,4 +6,4 @@ Resources:
         TaskDefinition: "<TASK_DEFINITION>"
         LoadBalancerInfo:
             ContainerName: "simple-app"
-            ContainerPort: "3000"
+            ContainerPort: "80"
