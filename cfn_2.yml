@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  HandsOnName:
+    Type: String
+    Default: handson
+  UserName:
+    Type: String
+    Default: user1
+Resources:
+  HandsOnSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      VpcId: { "Fn::ImportValue": !Sub "${HandsOnName}-${UserName}-vpc" }
+      GroupName: !Sub "${UserName}-handson-alb-sg"
+      GroupDescription: !Sub "${UserName}-handson-alb-sg"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 9000
+          ToPort: 9000
+          CidrIp: "0.0.0.0/0"
+  HandsOnALB: 
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties: 
+      Name: !Sub "${HandsOnName}-${UserName}-ecs-alb"
+      Scheme: "internet-facing"
+      SecurityGroups:
+        - { "Fn::ImportValue": !Sub "${HandsOnName}-${UserName}-vpc-default-sg" }
+        - !Ref HandsOnSecurityGroup
+      Subnets: 
+        - { "Fn::ImportValue": !Sub "${HandsOnName}-${UserName}-pubsub-1a" }
+        - { "Fn::ImportValue": !Sub "${HandsOnName}-${UserName}-pubsub-1c" }
+        - { "Fn::ImportValue": !Sub "${HandsOnName}-${UserName}-pubsub-1d" }
+  HandsOnECSCluster:
+    Type: "AWS::ECS::Cluster"
+    Properties:
+      ClusterName: !Sub "${HandsOnName}-${UserName}-fargate-cluster"
+Outputs:
+  ALB:
+    Value: !GetAtt HandsOnALB.DNSName
+    Export:
+      Name: !Sub "${HandsOnName}-${UserName}-ecs-alb-dnsname"
+Description: ECS Handson Step2
