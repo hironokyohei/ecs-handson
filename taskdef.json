@@ -34,25 +34,6 @@
                 "FOREGROUND"
             ],
             "essential": true
-        },
-        {
-            "name": "busybox",
-            "image": "busybox",
-            "cpu": 256,
-            "memory": 512,
-            "volumesFrom": [
-            {
-              "sourceContainer": "simple-app"
-            }
-            ],
-            "entryPoint": [
-                "sh",
-                "-c"
-            ],
-            "command": [
-                "/bin/sh -c \"while true; do /bin/date > /var/www/my-vol/date; sleep 1; done\""
-            ],
-            "essential": false
         }
     ]
 }
