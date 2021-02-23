@@ -14,7 +14,7 @@
         {
             "environment": [],
             "name": "simple-app",
-            "image": "<IMAGE1_NAME>",
+            "image": "113857159340.dkr.ecr.ap-northeast-1.amazonaws.com/amazon-ecs-sample:latest",
             "cpu": 256,
             "memory": 512,
             "portMappings": [
@@ -28,7 +28,31 @@
                     "containerPath": "/var/www/my-vol"
                 }
             ],
+            "entryPoint": [
+                "/usr/sbin/apache2",
+                "-D",
+                "FOREGROUND"
+            ],
             "essential": true
+        },
+        {
+            "name": "busybox",
+            "image": "busybox",
+            "cpu": 256,
+            "memory": 512,
+            "volumesFrom": [
+            {
+              "sourceContainer": "simple-app"
+            }
+            ],
+            "entryPoint": [
+                "sh",
+                "-c"
+            ],
+            "command": [
+                "/bin/sh -c \"while true; do /bin/date > /var/www/my-vol/date; sleep 1; done\""
+            ],
+            "essential": false
         }
     ]
 }
