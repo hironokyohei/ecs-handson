@@ -13,7 +13,7 @@ phases:
 
   post_build:
     commands:
-#      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - printf '{"ImageURI":"%s"}' $REPOSITORY_URI:$IMAGE_TAG > imageDetail.json
 
